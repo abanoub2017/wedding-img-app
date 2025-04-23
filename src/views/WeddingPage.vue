@@ -89,48 +89,52 @@ onMounted(async () => {
 <template>
     <div class="min-h-screen bg-pink-50 p-4 relative">
         <div class="absolute inset-0 bg-image opacity-15 z-0"></div>
-        <!-- Animated Modal -->
-        <TransitionRoot appear :show="showModal" as="template">
-            <Dialog as="div" class="relative z-50" @close="startSharing">
-                <!-- Backdrop -->
-                <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0"
-                    enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
-                    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
-                </TransitionChild>
-
-                <!-- Centered modal -->
-                <div class="fixed inset-0 flex items-center justify-center p-4">
-                    <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 scale-95"
-                        enter-to="opacity-100 scale-100" leave="ease-in duration-200" leave-from="opacity-100 scale-100"
-                        leave-to="opacity-0 scale-95">
-                        <DialogPanel
-                            class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
-                            <h3 class="text-xl font-bold mb-2 text-pink-600">Welcome to Fam & Monica's Wedding 🎉</h3>
-                            <p class="text-gray-500 mb-4">Share your beautiful memories with them 💞</p>
-                            <input v-model="guestName" type="text" placeholder="Enter your name"
-                                @keyup.enter="startSharing"
-                                class="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-pink-300" />
-                            <button @click="startSharing"
-                                class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded transition duration-300">
-                                Start Sharing
-                            </button>
-                        </DialogPanel>
+        <div class="relative z-10">
+            <!-- Animated Modal -->
+            <TransitionRoot appear :show="showModal" as="template">
+                <Dialog as="div" class="relative z-50" @close="startSharing">
+                    <!-- Backdrop -->
+                    <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0"
+                        enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100"
+                        leave-to="opacity-0">
+                        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
                     </TransitionChild>
-                </div>
-            </Dialog>
-        </TransitionRoot>
+
+                    <!-- Centered modal -->
+                    <div class="fixed inset-0 flex items-center justify-center p-4">
+                        <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100" leave="ease-in duration-200"
+                            leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+                            <DialogPanel
+                                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
+                                <h3 class="text-xl font-bold mb-2 text-pink-600">Welcome to Fam & Monica's Wedding 🎉
+                                </h3>
+                                <p class="text-gray-500 mb-4">Share your beautiful memories with them 💞</p>
+                                <input v-model="guestName" type="text" placeholder="Enter your name"
+                                    @keyup.enter="startSharing"
+                                    class="w-full border border-gray-300 rounded p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-pink-300" />
+                                <button @click="startSharing"
+                                    class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded transition duration-300">
+                                    Start Sharing
+                                </button>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </Dialog>
+            </TransitionRoot>
 
 
-        <!-- Main Content -->
-        <div v-if="!showModal">
-            <h1 class="text-2xl font-bold text-center mb-2">
-                Hello {{ guestName }} 👋 – Let's Share Some Memories 📸
-                <br>
-                With Fam and Monica
-            </h1>
-            <!-- <ImageUploader @image-upload="addImage" /> -->
-            <ImageUploader :uploaderName="guestName" weddingId="wedding123" @image-upload="addImage" />
-            <ImageGallery :images="images" @delete="removeImage" />
+            <!-- Main Content -->
+            <div v-if="!showModal">
+                <h1 class="text-2xl font-bold text-center mb-2">
+                    Hello {{ guestName }} 👋 – Let's Share Some Memories 📸
+                    <br>
+                    With Fam and Monica
+                </h1>
+                <!-- <ImageUploader @image-upload="addImage" /> -->
+                <ImageUploader :uploaderName="guestName" weddingId="wedding123" @image-upload="addImage" />
+                <ImageGallery :images="images" @delete="removeImage" />
+            </div>
         </div>
     </div>
 </template>

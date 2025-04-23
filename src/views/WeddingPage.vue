@@ -21,7 +21,7 @@ function startSharing() {
     if (!guestName.value.trim()) return
 
     // Save guest name to localStorage
-    localStorage.setItem('wedding-guest-name', guestName.value)
+    localStorage.setItem('wedding-guest-name', guestName.value.toLowerCase())
 
     showModal.value = false
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } })
@@ -33,7 +33,7 @@ async function getImages() {
     images.value = [] // Clear existing images
     // Call the API to get images
     try {
-        const weddingImages = await weedingService.getAllImages(guestName.value, guestName.value)
+        const weddingImages = await weedingService.getAllImages(guestName.value.toLowerCase(), guestName.value.toLowerCase())
         images.value = weddingImages
     } catch (error) {
         console.error("Error loading images:", error)
@@ -46,7 +46,7 @@ function addImage(imgUrl: string) {
     // Add image to local state for immediate UI update
     images.value.push({
         url: imgUrl,
-        uploaderName: guestName.value,
+        uploaderName: guestName.value.toLowerCase(),
         weddingId: weddingId
     })
 
@@ -76,6 +76,7 @@ onMounted(async () => {
     // Check if we have a saved guest name
     const savedName = localStorage.getItem('wedding-guest-name')
     if (savedName) {
+        guestName.value = guestName.value.toLowerCase()
         guestName.value = savedName
         showModal.value = false // Skip the modal if we already have the name
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } })

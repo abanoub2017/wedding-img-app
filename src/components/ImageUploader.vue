@@ -151,7 +151,7 @@ async function handleImageUpload(event: Event) {
 
         const response = await weedingService.uploadImage({
             file: fileToUpload,
-            uploaderName: props.uploaderName,
+            uploaderName: props.uploaderName.toLowerCase(),
             weddingId: props.weddingId
         });
 

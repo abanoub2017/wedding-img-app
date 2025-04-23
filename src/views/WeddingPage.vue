@@ -87,7 +87,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-pink-50 p-4">
+    <div class="min-h-screen bg-pink-50 p-4 relative">
+        <div class="absolute inset-0 bg-image opacity-15 z-0"></div>
         <!-- Animated Modal -->
         <TransitionRoot appear :show="showModal" as="template">
             <Dialog as="div" class="relative z-50" @close="startSharing">
@@ -124,6 +125,8 @@ onMounted(async () => {
         <div v-if="!showModal">
             <h1 class="text-2xl font-bold text-center mb-2">
                 Hello {{ guestName }} 👋 – Let's Share Some Memories 📸
+                <br>
+                With Fam and Monica
             </h1>
             <!-- <ImageUploader @image-upload="addImage" /> -->
             <ImageUploader :uploaderName="guestName" weddingId="wedding123" @image-upload="addImage" />
@@ -131,3 +134,18 @@ onMounted(async () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.bg-image {
+    background-image: url('../assets/fam_bg.jpeg');
+    /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Tailwind doesn't have opacity-15 by default, so we define it */
+.opacity-15 {
+    opacity: 0.15;
+}
+</style>

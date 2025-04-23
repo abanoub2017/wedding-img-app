@@ -2,60 +2,22 @@
     <div class="flex flex-col items-center space-y-4">
         <input type="file" accept="image/*" @change="handleImageUpload" class="file-input hidden" ref="fileInput" />
         <div class="flex items-center justify-center w-full p-4 border-dashed border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-all"
-            @click="openFileInput">
-            <p class="text-gray-600 text-lg">Click to Upload Image</p>
+            @click="openFileInput" :class="{ 'opacity-50 cursor-wait': isLoading }">
+            <div v-if="isLoading" class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-pink-500" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <p class="text-gray-600 text-lg">Uploading...</p>
+            </div>
+            <p v-else class="text-gray-600 text-lg">Click to Upload Image</p>
         </div>
     </div>
 </template>
 
-<!-- <script setup lang="ts">
-import { ref } from 'vue'
-import WeedingManageServices from '@/services'
-
-// Define the emit function to communicate with the parent component
-const emit = defineEmits<{
-    (event: 'image-upload', imgUrl: string): void
-}>()
-const props = defineProps<{
-    uploaderName: string;
-    weddingId?: string;
-}>();
-
-const fileInput = ref<HTMLInputElement | null>(null)
-
-function openFileInput() {
-    fileInput.value?.click()
-}
-function handleImageUpload(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0]
-    if (file && file.type.startsWith('image/')) {
-        const weedingService = new WeedingManageServices();
-
-        weedingService.uploadImage({
-            file,
-            uploaderName: props.uploaderName,
-            weddingId: props.weddingId
-        })
-            .then((response) => {
-                // The response should have url and id properties
-                emit('image-upload', response.url)
-            })
-            .catch((error: any) => {
-                console.error('Error uploading image:', error)
-            })
-    }
-    else {
-        console.error('Invalid file type. Please upload an image.')
-    }
-
-    // Reset the file input value to allow re-uploading the same file
-    if (fileInput.value) {
-        fileInput.value.value = ''
-    }
-}
-
-
-</script> -->
 <script setup lang="ts">
 import { ref } from 'vue'
 import WeedingManageServices from '@/services'
@@ -67,10 +29,12 @@ const emit = defineEmits<{
 const props = defineProps<{
     uploaderName: string;
     weddingId?: string;
+    // isLoading?: boolean;
 }>();
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const MAX_FILE_SIZE = 1024 * 1024; // 1 MB in bytes
+const isLoading = ref(false)
 
 function openFileInput() {
     fileInput.value?.click()
@@ -139,12 +103,10 @@ async function handleImageUpload(event: Event) {
 
     try {
         let fileToUpload = file;
-
+        isLoading.value = true;
         // Check if file size is larger than MAX_FILE_SIZE
         if (file.size > MAX_FILE_SIZE) {
-            console.log(`File size is ${file.size / (1024 * 1024)} MB. Resizing...`);
             fileToUpload = await resizeImage(file);
-            console.log(`Resized to ${fileToUpload.size / (1024 * 1024)} MB`);
         }
 
         const weedingService = new WeedingManageServices();
@@ -159,6 +121,8 @@ async function handleImageUpload(event: Event) {
         emit('image-upload', response.url)
     } catch (error) {
         console.error('Error uploading image:', error)
+    } finally {
+        isLoading.value = false
     }
 
     // Reset the file input value to allow re-uploading the same file

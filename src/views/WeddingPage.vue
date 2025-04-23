@@ -14,6 +14,9 @@ const guestName = ref('')
 const images = ref<any[]>([])
 const weedingService = new WeedingManageServices()
 
+// Loading states
+const deletingImageIds = ref<string[]>([])
+const isLoadingImages = ref(false) // New state for image loading
 
 
 
@@ -30,6 +33,7 @@ function startSharing() {
 
 // Get the images from api
 async function getImages() {
+    isLoadingImages.value = true // Start loading
     images.value = [] // Clear existing images
     // Call the API to get images
     try {
@@ -38,6 +42,8 @@ async function getImages() {
     } catch (error) {
         console.error("Error loading images:", error)
         toast.error("Failed to load images")
+    } finally {
+        isLoadingImages.value = false // End loading regardless of success/error
     }
 }
 
@@ -57,6 +63,7 @@ function addImage(imgUrl: string) {
 // Update removeImage to call the API
 async function removeImage(index: number, id: string) {
     try {
+        deletingImageIds.value.push(id)
         // Call API to delete the image
         await weedingService.deleteImage(id)
 
@@ -68,7 +75,11 @@ async function removeImage(index: number, id: string) {
     } catch (error) {
         console.error("Error deleting image:", error)
         toast.error("Failed to delete image")
+    } finally {
+
+        deletingImageIds.value = deletingImageIds.value.filter(imageId => imageId !== id)
     }
+
 }
 
 // Load images on component mount
@@ -134,7 +145,7 @@ onMounted(async () => {
                 </h1>
                 <!-- <ImageUploader @image-upload="addImage" /> -->
                 <ImageUploader :uploaderName="guestName" weddingId="wedding123" @image-upload="addImage" />
-                <ImageGallery :images="images" @delete="removeImage" />
+                <ImageGallery :images="images" @delete="removeImage" :deletingImageIds="deletingImageIds" />
             </div>
         </div>
     </div>

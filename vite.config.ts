@@ -35,7 +35,7 @@ const baseUrl = process.env.GITHUB_REPOSITORY
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: baseUrl, // Set the base URL for GitHub Pages
+  base: '/wedding-img-app/', // <- Fix: hardcode the repository name
   plugins: [
     vue(),
     vueDevTools(),
